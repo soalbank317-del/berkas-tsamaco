@@ -1,228 +1,200 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tsamaco</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- Mengimpor Open Sans dari Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tsamaco — Arsip</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      margin: 0;
-      font-family: 'Open Sans', sans-serif;
-      background-color: #f5f6fa;
-      color: #333;
+    :root{
+      --bg:#f5f6fa; --card:#ffffff; --accent:#22c55e; --accent-dark:#16a34a;
+      --muted:#64748b; --text:#0f172a; --highlight:#fff9c4;
     }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:"Open Sans",sans-serif; background:var(--bg); color:var(--text);
+    }
+    header{
+      background:#fff; padding:14px 20px; box-shadow:0 1px 6px rgba(2,6,23,0.06);
+      position:sticky; top:0; z-index:30;
+      display:flex; align-items:center; justify-content:center; gap:16px;
+    }
+    .logo-text{
+      color:var(--accent); font-weight:700; font-size:20px; letter-spacing:.4px;
+      margin-right:6px; cursor:pointer;
+    }
+    form.search {
+      display:flex; align-items:center; gap:8px;
+      width:100%; max-width:600px;
+      border-radius:999px; padding:6px; background:#fff;
+      border:2px solid var(--accent);
+      box-shadow:0 4px 12px rgba(2,6,23,0.06);
+      overflow:hidden;
+    }
+    .search .prefix{ padding:8px 12px; display:flex; align-items:center; color:var(--muted); }
+    .search input{
+      flex:1; border:0; outline:none; padding:10px 12px; font-size:15px;
+      background:transparent;
+    }
+    .search button{
+      background:var(--accent); color:#fff; border:0; padding:8px 16px; border-radius:999px;
+      cursor:pointer; font-weight:600; transition:background .2s;
+    }
+    .search button:hover{ background:var(--accent-dark); }
 
-    header {
-      background-color: #fff;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.1);
-      padding: 14px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 18px;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
+    main{ max-width:1300px; margin:30px auto; padding:0 20px; }
+    .results{
+      display:grid; grid-template-columns:repeat(5,1fr); gap:18px;
     }
+    @media(max-width:1200px){ .results{ grid-template-columns:repeat(4,1fr);} }
+    @media(max-width:1000px){ .results{ grid-template-columns:repeat(3,1fr);} }
+    @media(max-width:700px){ .results{ grid-template-columns:repeat(2,1fr);} }
+    @media(max-width:480px){ .results{ grid-template-columns:1fr;} }
 
-    .logo-text {
-      font-size: 22px;
-      font-weight: 600;
-      color: #22c55e;
-      margin-right: 20px;
-      letter-spacing: 0.5px;
-      cursor: pointer;
-      transition: color 0.2s ease;
+    .card{
+      background:var(--card); border-radius:12px; padding:18px; text-align:center;
+      box-shadow:0 6px 18px rgba(2,6,23,0.06);
+      transition:transform .22s ease, box-shadow .22s ease;
+      display:flex; flex-direction:column; gap:10px; align-items:center; cursor:pointer;
     }
-    .logo-text:hover {
-      color: #16a34a;
-    }
+    .card:hover{ transform:translateY(-6px); box-shadow:0 14px 36px rgba(2,6,23,0.12); }
+    .card:active{ transform:scale(.98); box-shadow:0 8px 28px rgba(2,6,23,0.08); }
+    .icon{ font-size:36px; }
+    .name{ font-weight:600; font-size:14px; color:var(--text); word-break:break-word; }
+    .meta{ font-size:13px; color:var(--muted); }
+    .open-btn{ background:var(--accent); color:#fff; padding:8px 14px; border-radius:999px;
+      text-decoration:none; font-weight:600; }
+    .open-btn:hover{ background:var(--accent-dark); }
+    .empty{ text-align:center; color:var(--muted); padding:60px 0; font-size:15px; }
 
-    .search-container {
-      display: flex;
-      align-items: center;
-      background: #fff;
-      border: 2px solid #22c55e;
-      border-radius: 50px;
-      overflow: hidden;
-      width: 100%;
-      max-width: 600px;
-      transition: box-shadow 0.2s ease;
-    }
-    .search-container:hover {
-      box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
-    }
-
-    .search-container input {
-      flex: 1;
-      padding: 10px 18px;
-      border: none;
-      outline: none;
-      font-size: 15px;
-      background: transparent;
-    }
-    .search-container button {
-      background: #22c55e;
-      color: #fff;
-      border: none;
-      padding: 10px 22px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 15px;
-      transition: background 0.2s ease;
-    }
-    .search-container button:hover {
-      background: #16a34a;
-    }
-
-    main {
-      max-width: 1300px;
-      margin: 30px auto;
-      padding: 0 20px;
-    }
-
-    .results {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 20px;
-    }
-    @media (max-width: 1200px) {
-      .results { grid-template-columns: repeat(4, 1fr); }
-    }
-    @media (max-width: 1000px) {
-      .results { grid-template-columns: repeat(3, 1fr); }
-    }
-    @media (max-width: 700px) {
-      .results { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 500px) {
-      .results { grid-template-columns: repeat(1, 1fr); }
-    }
-
-    .card {
-      background: #fff;
-      border-radius: 14px;
-      padding: 18px;
-      text-align: center;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.08);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.12);
-    }
-    .card:active {
-      transform: scale(0.95);
-      box-shadow: 0 0 10px #22c55e;
-    }
-
-    .card .emoji {
-      font-size: 32px;
-      margin-bottom: 6px;
-    }
-    .card h3 {
-      font-size: 16px;
-      margin: 6px 0;
-      color: #1e293b;
-      font-weight: 600;
-    }
-    .card p {
-      font-size: 14px;
-      color: #64748b;
-      margin: 4px 0 10px;
-    }
-    .open-btn {
-      display: inline-block;
-      background: #22c55e;
-      color: white;
-      padding: 6px 16px;
-      border-radius: 20px;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 600;
-      transition: background 0.2s ease;
-    }
-    .open-btn:hover {
-      background: #16a34a;
-    }
+    mark.hi{ background:var(--highlight); padding:0 .14em; border-radius:4px; }
+    footer{ text-align:center; color:var(--muted); margin:26px 0; font-size:13px; }
   </style>
 </head>
 <body>
+<header>
+  <div class="logo-text">Tsamaco</div>
+  <form class="search" onsubmit="event.preventDefault(); doSearch();">
+    <div class="prefix">🔍</div>
+    <input id="q" type="search" placeholder="Cari dokumen, mapel, atau nama file…" aria-label="Cari">
+    <button type="submit">Cari</button>
+  </form>
+</header>
 
-  <header>
-    <div class="logo-text">Tsamaco</div>
-    <form class="search-container" onsubmit="event.preventDefault(); searchFiles();">
-      <input type="text" id="searchInput" placeholder="Cari dokumen, arsip, atau pelajaran...">
-      <button type="submit">Cari</button>
-    </form>
-  </header>
+<main>
+  <div id="results" class="results"></div>
+  <div id="empty" class="empty" style="display:none">Tidak ada file yang cocok.</div>
+  <footer id="footer">Menampilkan 0 file | @pacegondes 2025</footer>
+</main>
 
-  <main>
-    <div class="results" id="fileResults"></div>
-  </main>
+<script>
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT1s3KCGJWMcqWQkTppTXiuZMxxFUPJVLIxttNtOFRg2tzDT7kDeWxOyVofc8Fa7-PAQj8IiLD_S1Sw/export?format=csv";
 
-  <script>
-    const files = [
-      { name: "Akidah Akhlak", icon: "📖", link: "#" },
-      { name: "Al-Qur'an Hadits", icon: "👳‍♂️", link: "#" },
-      { name: "Bahasa Arab", icon: "🕌", link: "#" },
-      { name: "SKI", icon: "📜", link: "#" },
-      { name: "Fikih", icon: "📘", link: "#" },
-      { name: "Bahasa Indonesia", icon: "📚", link: "#" },
-      { name: "Matematika", icon: "🧮", link: "#" },
-      { name: "IPA", icon: "🔬", link: "#" },
-      { name: "IPS", icon: "🌏", link: "#" },
-      { name: "Bahasa Inggris", icon: "🇬🇧", link: "#" },
-      { name: "PJOK", icon: "🏃‍♂️", link: "#" },
-      { name: "Informatika", icon: "💻", link: "#" },
-      { name: "Seni Budaya", icon: "🎨", link: "#" },
-      { name: "Prakarya", icon: "🛠️", link: "#" },
-      { name: "Bahasa Jawa", icon: "🧩", link: "#" },
-      { name: "Nahwu Shorof", icon: "📗", link: "#" },
-      { name: "Fiqih Lanjutan", icon: "📕", link: "#" },
-    ];
+let dataAll = [];
 
-    const container = document.getElementById('fileResults');
+function csvToObjects(csv){
+  const rows = csv.split(/\r?\n/).filter(r=>r.trim()!=="");
+  if(!rows.length) return [];
+  const header = rows.shift().split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(h=>h.replace(/^"|"$/g,'').trim());
+  const idx = {};
+  header.forEach((h,i)=> idx[h.toLowerCase()] = i);
+  return rows.map(line=>{
+    const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c=>c.replace(/^"|"$/g,'').trim());
+    const obj = {};
+    header.forEach((h,i)=> obj[h] = cols[i] || "");
+    obj._name = cols[ idx["nama file"] ] || cols[ idx["name"] ] || "";
+    obj._link = cols[ idx["link file"] ] || cols[ idx["link"] ] || "#";
+    obj._size = cols[ idx["ukuran"] ] || "";
+    obj._date = cols[ idx["tanggal"] ] || "";
+    obj._icon = cols[ idx["ikon"] ] || "";
+    obj._category = cols[ idx["kategori"] ] || "";
+    return obj;
+  });
+}
 
-    function displayFiles(list) {
-      container.innerHTML = list.map(f => `
-        <div class="card" onclick="animateCard(this)">
-          <div class="emoji">${f.icon}</div>
-          <h3>${f.name}</h3>
-          <p>- - -</p>
-          <a href="${f.link}" class="open-btn">Buka</a>
-        </div>
-      `).join('');
-    }
+const FALLBACK_ICONS = {
+  pdf:"📄", doc:"📄", xls:"📊", ppt:"📈", zip:"🗜️",
+  akidah:"📖", qur:"📖", arab:"📝", mtk:"➗", ipa:"🔬", ips:"🌏"
+};
 
-    function searchFiles() {
-      const query = document.getElementById('searchInput').value.toLowerCase();
-      const filtered = files.filter(f => f.name.toLowerCase().includes(query));
-      displayFiles(filtered);
-    }
+function detectIcon(name, csvIcon){
+  if(csvIcon && csvIcon.trim()) return csvIcon;
+  const ext = (name.split('.').pop()||"").toLowerCase();
+  if(FALLBACK_ICONS[ext]) return FALLBACK_ICONS[ext];
+  const l = name.toLowerCase();
+  for(const k in FALLBACK_ICONS) if(l.includes(k)) return FALLBACK_ICONS[k];
+  return "📁";
+}
 
-    function animateCard(card) {
-      card.style.transition = "all 0.3s ease";
-      card.style.transform = "scale(1.05)";
-      card.style.boxShadow = "0 0 20px rgba(34,197,94,0.5)";
-      setTimeout(() => {
+function highlight(text, q){
+  if(!q) return text;
+  const esc = q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const re = new RegExp(esc,'ig');
+  return text.replace(re, m=>`<mark class="hi">${m}</mark>`);
+}
+
+function escapeHtml(s){ return String(s||"").replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function escapeAttr(s){ return (s||"#").replace(/"/g,'&quot;'); }
+
+function render(list, q=""){
+  const cont = document.getElementById('results');
+  const empty = document.getElementById('empty');
+  cont.innerHTML = "";
+  if(!list.length){
+    empty.style.display = "";
+    cont.style.display = "none";
+    document.getElementById('footer').textContent = `Menampilkan 0 file | @pacegondes 2025`;
+    return;
+  }
+  empty.style.display = "none";
+  cont.style.display = "";
+  list.forEach(it=>{
+    const icon = detectIcon(it._name, it._icon);
+    const card = document.createElement('div');
+    card.className = "card";
+    card.innerHTML = `
+      <div class="icon">${icon}</div>
+      <div class="name">${highlight(escapeHtml(it._name), q)}</div>
+      <div class="meta">${escapeHtml(it._size)} ${it._date ? '· ' + escapeHtml(it._date) : ''}</div>
+      <a class="open-btn" href="${escapeAttr(it._link)}" target="_blank" rel="noopener">Buka</a>
+    `;
+    card.addEventListener('click', ()=>{
+      card.style.transition = "transform .18s ease, box-shadow .18s ease";
+      card.style.transform = "scale(1.04)";
+      card.style.boxShadow = "0 0 22px rgba(34,197,94,0.28)";
+      setTimeout(()=>{
         card.style.transform = "";
         card.style.boxShadow = "";
-      }, 400);
-    }
+      }, 350);
+    });
+    cont.appendChild(card);
+  });
+  document.getElementById('footer').textContent = `Menampilkan ${list.length} file | @pacegondes 2025`;
+}
 
-    displayFiles(files);
-  </script>
+async function loadCsv(){
+  try{
+    const res = await fetch(CSV_URL);
+    if(!res.ok) throw new Error(res.status + " " + res.statusText);
+    const txt = await res.text();
+    dataAll = csvToObjects(txt);
+    render(dataAll);
+  }catch(err){
+    document.getElementById('results').innerHTML = `<div style="grid-column:1/-1;color:#b00020;text-align:center;padding:18px;background:#fff;border-radius:8px">Gagal ambil data: ${err.message}</div>`;
+    console.error(err);
+  }
+}
 
+function doSearch(){
+  const q = document.getElementById('q').value.trim().toLowerCase();
+  if(!q) return render(dataAll);
+  const filtered = dataAll.filter(d => (d._name||"").toLowerCase().includes(q) || (d._category||"").toLowerCase().includes(q));
+  render(filtered, q);
+}
+
+document.getElementById('q').addEventListener('input', ()=> doSearch());
+loadCsv();
+</script>
 </body>
 </html>
-
 
