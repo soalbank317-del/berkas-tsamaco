@@ -35,13 +35,13 @@ body{
 h1{ font-size:24px; letter-spacing:1px; color:var(--text); text-transform:uppercase; margin-bottom:6px;}
 .sub{ color:var(--muted); font-size:15px; margin-bottom:16px;}
 .controls{
-  display:flex; flex-wrap:wrap; justify-content:center; gap:12px; margin-bottom:16px;
+  width:100%; max-width:500px; margin-bottom:16px;
 }
-.controls select, .controls input{
-  padding:12px 16px; border-radius:12px; border:2px solid var(--accent);
-  outline:none; font-size:14px; transition:0.25s; width:200px;
+.controls input{
+  width:100%; padding:12px 16px; border-radius:12px; border:2px solid var(--accent);
+  outline:none; font-size:14px; transition:0.25s;
 }
-.controls select:focus, .controls input:focus{ border-color:var(--accent-dark); box-shadow:0 4px 20px rgba(30,136,229,0.2);}
+.controls input:focus{ border-color:var(--accent-dark); box-shadow:0 4px 20px rgba(30,136,229,0.2);}
 .results{
   width:100%; display:grid; grid-template-columns:1fr; gap:16px; transition: all 0.3s ease;
 }
@@ -94,19 +94,6 @@ footer{ margin-top:28px; text-align:center; color:var(--muted); font-size:13px;}
 
   <div class="controls">
     <input id="q" placeholder="Cari nama file...">
-    <select id="fileType">
-      <option value="">Semua Jenis File</option>
-      <option value="pdf">PDF</option>
-      <option value="doc">Word</option>
-      <option value="xls">Excel</option>
-      <option value="zip">ZIP</option>
-    </select>
-    <select id="category">
-      <option value="">Semua Kategori</option>
-      <option value="Administrasi">Administrasi</option>
-      <option value="Materi">Materi</option>
-      <option value="Template">Template</option>
-    </select>
   </div>
 
   <div id="results" class="results" aria-live="polite"></div>
@@ -114,7 +101,6 @@ footer{ margin-top:28px; text-align:center; color:var(--muted); font-size:13px;}
 </div>
 
 <script>
-// Sama seperti versi sebelumnya, hanya style yg lebih cantik
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT1s3KCGJWMcqWQkTppTXiuZMxxFUPJVLIxttNtOFRg2tzDT7kDeWxOyVofc8Fa7-PAQj8IiLD_S1Sw/pub?output=csv";
 let all = [];
 
@@ -162,17 +148,10 @@ function escapeAttr(s){ return s?s.replace(/"/g,'&quot;'):''; }
 
 function render(){
   const q = document.getElementById('q').value.trim().toLowerCase();
-  const type = document.getElementById('fileType').value.toLowerCase();
-  const cat = document.getElementById('category').value.toLowerCase();
   const cont = document.getElementById('results');
   cont.innerHTML = "";
 
-  const filtered = all.filter(f=>{
-    const matchQ = f.nama.toLowerCase().includes(q);
-    const matchType = type ? f.nama.toLowerCase().endsWith(type) : true;
-    const matchCat = cat ? f.category.toLowerCase() === cat : true;
-    return matchQ && matchType && matchCat;
-  });
+  const filtered = all.filter(f=>f.nama.toLowerCase().includes(q));
 
   if(!filtered.length){ cont.innerHTML='<div class="empty">Tidak ada file yang cocok.</div>'; return; }
 
@@ -217,12 +196,7 @@ async function load(){
 }
 
 document.getElementById('q').addEventListener('input', render);
-document.getElementById('fileType').addEventListener('change', render);
-document.getElementById('category').addEventListener('change', render);
-
 load();
 </script>
 </body>
 </html>
-
-
