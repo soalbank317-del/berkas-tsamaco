@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TSAMACO - Arsip File</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f5f5; --card:#ffffff; --accent:#1e88e5; --accent-dark:#1565c0;
+  --muted:#666; --text:#222;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+  background:var(--bg);
+  min-height:100vh;
+  display:flex; justify-content:center; padding:28px;
+}
+.wrap{
+  width:100%; max-width:1100px;
+  background:var(--card); border-radius:18px; padding:28px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+  display:flex; flex-direction:column; align-items:center;
+}
+.head{text-align:center; margin-bottom:18px;}
+.logo{
+  width:72px; height:72px; border-radius:14px;
+  background:var(--accent); display:flex; align-items:center; justify-content:center;
+  color:white; font-size:32px; margin:0 auto 12px auto;
+  box-shadow:0 6px 18px rgba(30,136,229,0.2);
+}
+h1{ font-size:22px; letter-spacing:1px; color:var(--text); text-transform:uppercase; margin-bottom:6px;}
+.sub{ color:var(--muted); font-size:14px; margin-bottom:12px;}
+.search{ width:100%; max-width:780px; margin:12px 0;}
+.search input{
+  width:100%; padding:14px 18px; border-radius:999px; border:2px solid var(--accent);
+  outline:none; font-size:15px; box-shadow:0 4px 12px rgba(0,0,0,0.05);
+  transition:0.25s;
+}
+.search input:focus{ border-color:var(--accent-dark); box-shadow:0 6px 18px rgba(0,0,0,0.15);}
+.results{
+  width:100%; margin-top:20px; display:grid; grid-template-columns:1fr; gap:14px;
+}
+@media(min-width:700px){ .results{ grid-template-columns:repeat(2,1fr);} }
+@media(min-width:1000px){ .results{ grid-template-columns:repeat(3,1fr);} }
+
+.card{
+  border-radius:12px; padding:16px;
+  background:var(--card);
+  box-shadow:0 6px 18px rgba(0,0,0,0.06);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover{ transform:translateY(-5px); box-shadow:0 14px 36px rgba(0,0,0,0.12);}
+.card .top{ display:flex; gap:12px; align-items:center; }
+.symbol{
+  width:56px; height:56px; border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:26px; background:#f0f0f0; color:var(--accent);
+  box-shadow:inset 0 -6px 20px rgba(0,0,0,0.02);
+}
+.meta{ flex:1; }
+.mapel{ font-weight:700; color:var(--text); font-size:16px; margin-bottom:4px; }
+.meta span{ font-weight:500; color:var(--muted); font-size:13px; margin-right:10px; }
+
+.card .actions{ margin-top:12px; }
+.btn.open{
+  display:inline-block; padding:8px 14px; border-radius:10px; border:0;
+  background:var(--accent); color:white; font-weight:700; text-decoration:none;
+  transition:0.2s;
+}
+.btn.open:hover{ background:var(--accent-dark); }
+.empty{ text-align:center;color:var(--muted); padding:28px 0; font-size:15px; }
+mark.hi{ background:#fff59d; padding:0 .15em; border-radius:4px; }
+footer{ margin-top:20px; text-align:center; color:var(--muted); font-size:13px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <div class="logo">TA</div>
+    <h1>TSAMACO (Tsanawiyah Ma'arif Competition)</h1>
+    <div class="sub">Arsip Soal MTs Amtsilati - Persiapan Tsamaco</div>
+  </div>
+
+  <div class="search">
+    <input id="q" placeholder="Cari nama file, jenis, atau tanggal update...">
+  </div>
+
+  <div id="results" class="results" aria-live="polite"></div>
+  <footer id="footer">@pacegondes <strong>2025</strong></footer>
+</div>
+
+<script>
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT1s3KCGJWMcqWQkTppTXiuZMxxFUPJVLIxttNtOFRg2tzDT7kDeWxOyVofc8Fa7-PAQj8IiLD_S1Sw/pub?output=csv";
+let all = [];
+
+function parseCSV(text){
+  const rows = text.split(/\r?\n/).filter(r=>r.trim()!=="");
+  if(!rows.length) return [];
+  const header = rows.shift().split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(h=>h.trim().toLowerCase());
+  const iNama = header.indexOf("nama file");
+  const iLink = header.indexOf("link file");
+  const iIcon = header.indexOf("ikon");
+  const iSize = header.indexOf("ukuran");
+  const iDate = header.indexOf("tanggal");
+  return rows.map(line=>{
+    const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c=>c.replace(/^"|"$/g,'').trim());
+    return {
+      nama: cols[iNama] || "Untitled",
+      link: cols[iLink] || "#",
+      ikon: cols[iIcon] || "",
+      size: cols[iSize] || "-",
+      date: cols[iDate] || "-"
+    };
+  });
+}
+
+const FILE_ICONS = {
+  "pdf":"📄", "doc":"📄", "docx":"📄", "xls":"📊", "xlsx":"📊", "zip":"🗜️", "ppt":"📈"
+};
+
+function detectIcon(name, csvIcon){
+  if(csvIcon && csvIcon.trim()) return csvIcon.trim();
+  const ext = name.split('.').pop().toLowerCase();
+  return FILE_ICONS[ext] || "⭐";
+}
+
+function highlight(text,q){
+  if(!q) return text;
+  const esc = q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const re = new RegExp(esc,'ig');
+  return text.replace(re, m => `<mark class="hi">${m}</mark>`);
+}
+
+function escapeAttr(s){ return s?s.replace(/"/g,'&quot;'):''; }
+
+function render(items,q=""){
+  const cont = document.getElementById('results');
+  cont.innerHTML="";
+  if(!items.length){ cont.innerHTML='<div class="empty">Tidak ada file yang cocok.</div>'; return; }
+  items.forEach(it=>{
+    const icon = detectIcon(it.nama,it.ikon);
+    const card = document.createElement('article');
+    card.className='card';
+    card.innerHTML = `
+      <div class="top">
+        <div class="symbol">${icon}</div>
+        <div class="meta">
+          <div class="mapel">${highlight(it.nama,q)}</div>
+          <span>${it.size}</span>
+          <span>${it.date}</span>
+        </div>
+      </div>
+      <div class="actions">
+        <a class="btn open" href="${escapeAttr(it.link)}" target="_blank" rel="noopener">Buka ↗</a>
+      </div>
+    `;
+    cont.appendChild(card);
+  });
+  document.getElementById('footer').textContent = `Menampilkan ${items.length} file | @pacegondes 2025`;
+}
+
+async function load(){
+  try{
+    const res = await fetch(CSV_URL);
+    if(!res.ok) throw new Error('Fetch error: '+res.status);
+    const text = await res.text();
+    all = parseCSV(text);
+    all.sort((a,b)=>a.nama.localeCompare(b.nama));
+  }catch(err){
+    document.getElementById('results').innerHTML=`<div class="empty">Gagal mengambil data: ${err.message}</div>`;
+    console.error(err);
+  }
+}
+
+document.getElementById('q').addEventListener('input',()=>{
+  const q = document.getElementById('q').value.trim();
+  if(q===""){ document.getElementById('results').innerHTML=""; return; }
+  render(all.filter(i=>i.nama.toLowerCase().includes(q.toLowerCase())),q);
+});
+
+load();
+</script>
+</body>
+</html>
