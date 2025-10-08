@@ -14,10 +14,13 @@
     body{
       margin:0; font-family:"Open Sans",sans-serif; background:var(--bg); color:var(--text);
     }
+
+    /* HEADER & SEARCH */
     header{
-      background:#fff; padding:14px 20px; box-shadow:0 1px 6px rgba(2,6,23,0.06);
+      background:#fff; padding:12px 18px;
+      box-shadow:0 1px 6px rgba(2,6,23,0.06);
       position:sticky; top:0; z-index:30;
-      display:flex; align-items:center; justify-content:center; gap:16px;
+      display:flex; align-items:center; justify-content:center; gap:12px;
     }
     .logo-text{
       color:var(--accent); font-weight:700; font-size:20px; letter-spacing:.4px;
@@ -25,50 +28,51 @@
     }
     form.search {
       display:flex; align-items:center; gap:8px;
-      width:100%; max-width:600px;
+      width:100%; max-width:760px;
       border-radius:999px; padding:6px; background:#fff;
       border:2px solid var(--accent);
       box-shadow:0 4px 12px rgba(2,6,23,0.06);
       overflow:hidden;
     }
-    .search .prefix{ padding:8px 12px; display:flex; align-items:center; color:var(--muted); }
+    .search .prefix{ padding:8px 12px; display:flex; align-items:center; color:var(--muted); font-size:18px; }
     .search input{
-      flex:1; border:0; outline:none; padding:10px 12px; font-size:15px;
-      background:transparent;
+      flex:1; border:0; outline:none; padding:10px 12px; font-size:15px; background:transparent;
     }
     .search button{
       background:var(--accent); color:#fff; border:0; padding:8px 16px; border-radius:999px;
-      cursor:pointer; font-weight:600; transition:background .2s;
+      cursor:pointer; font-weight:600; transition:background .18s;
     }
     .search button:hover{ background:var(--accent-dark); }
 
-    main{ max-width:1300px; margin:30px auto; padding:0 20px; }
+    /* GRID RESULT */
+    main{ max-width:1300px; margin:18px auto; padding:0 18px 48px; }
     .results{
-      display:grid; grid-template-columns:repeat(5,1fr); gap:18px;
+      display:grid; grid-template-columns:repeat(5,1fr); gap:16px;
     }
     @media(max-width:1200px){ .results{ grid-template-columns:repeat(4,1fr);} }
     @media(max-width:1000px){ .results{ grid-template-columns:repeat(3,1fr);} }
     @media(max-width:700px){ .results{ grid-template-columns:repeat(2,1fr);} }
     @media(max-width:480px){ .results{ grid-template-columns:1fr;} }
 
+    /* CARD */
     .card{
-      background:var(--card); border-radius:12px; padding:18px; text-align:center;
-      box-shadow:0 6px 18px rgba(2,6,23,0.06);
+      background:var(--card); border-radius:12px; padding:16px;
+      text-align:center; box-shadow:0 6px 18px rgba(2,6,23,0.06);
       transition:transform .22s ease, box-shadow .22s ease;
-      display:flex; flex-direction:column; gap:10px; align-items:center; cursor:pointer;
+      display:flex; flex-direction:column; align-items:center; gap:10px;
+      cursor:pointer; min-height:160px;
     }
     .card:hover{ transform:translateY(-6px); box-shadow:0 14px 36px rgba(2,6,23,0.12); }
-    .card:active{ transform:scale(.98); box-shadow:0 8px 28px rgba(2,6,23,0.08); }
+    .card:active{ transform:scale(.97); box-shadow:0 8px 20px rgba(2,6,23,0.08); }
+
     .icon{ font-size:36px; }
-    .name{ font-weight:600; font-size:14px; color:var(--text); word-break:break-word; }
-    .meta{ font-size:13px; color:var(--muted); }
-    .open-btn{ background:var(--accent); color:#fff; padding:8px 14px; border-radius:999px;
-      text-decoration:none; font-weight:600; }
+    .name{ font-weight:600; font-size:14px; color:var(--text); text-align:center; word-break:break-word; }
+    .open-btn{ background:var(--accent); color:#fff; padding:8px 14px; border-radius:999px; text-decoration:none; font-weight:600; }
     .open-btn:hover{ background:var(--accent-dark); }
     .empty{ text-align:center; color:var(--muted); padding:60px 0; font-size:15px; }
-
     mark.hi{ background:var(--highlight); padding:0 .14em; border-radius:4px; }
-    footer{ text-align:center; color:var(--muted); margin:26px 0; font-size:13px; }
+
+    footer{ text-align:center; color:var(--muted); margin-top:26px; font-size:13px; }
   </style>
 </head>
 <body>
@@ -83,117 +87,93 @@
 
 <main>
   <div id="results" class="results"></div>
-  <div id="empty" class="empty" style="display:none">Tidak ada file yang cocok.</div>
+  <div id="empty" class="empty" style="display:none;">Tidak ada file yang cocok.</div>
   <footer id="footer">Menampilkan 0 file | @pacegondes 2025</footer>
 </main>
 
 <script>
-const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT1s3KCGJWMcqWQkTppTXiuZMxxFUPJVLIxttNtOFRg2tzDT7kDeWxOyVofc8Fa7-PAQj8IiLD_S1Sw/export?format=csv";
-
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT1s3KCGJWMcqWQkTppTXiuZMxxFUPJVLIxttNtOFRg2tzDT7kDeWxOyVofc8Fa7-PAQj8IiLD_S1Sw/pub?output=csv";
 let dataAll = [];
 
 function csvToObjects(csv){
   const rows = csv.split(/\r?\n/).filter(r=>r.trim()!=="");
   if(!rows.length) return [];
-  const header = rows.shift().split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(h=>h.replace(/^"|"$/g,'').trim());
-  const idx = {};
-  header.forEach((h,i)=> idx[h.toLowerCase()] = i);
+  const header = rows.shift().split(',').map(h=>h.replace(/^"|"$/g,'').trim().toLowerCase());
+  const idxNama = header.indexOf("nama file");
+  const idxLink = header.indexOf("link file");
+  const idxIkon = header.indexOf("ikon");
+
   return rows.map(line=>{
     const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c=>c.replace(/^"|"$/g,'').trim());
-    const obj = {};
-    header.forEach((h,i)=> obj[h] = cols[i] || "");
-    obj._name = cols[ idx["nama file"] ] || cols[ idx["name"] ] || "";
-    obj._link = cols[ idx["link file"] ] || cols[ idx["link"] ] || "#";
-    obj._size = cols[ idx["ukuran"] ] || "";
-    obj._date = cols[ idx["tanggal"] ] || "";
-    obj._icon = cols[ idx["ikon"] ] || "";
-    obj._category = cols[ idx["kategori"] ] || "";
-    return obj;
+    return {
+      nama: cols[idxNama] || "Untitled",
+      link: cols[idxLink] || "#",
+      ikon: cols[idxIkon] || "📁"
+    };
   });
 }
 
-const FALLBACK_ICONS = {
-  pdf:"📄", doc:"📄", xls:"📊", ppt:"📈", zip:"🗜️",
-  akidah:"📖", qur:"📖", arab:"📝", mtk:"➗", ipa:"🔬", ips:"🌏"
-};
-
-function detectIcon(name, csvIcon){
-  if(csvIcon && csvIcon.trim()) return csvIcon;
-  const ext = (name.split('.').pop()||"").toLowerCase();
-  if(FALLBACK_ICONS[ext]) return FALLBACK_ICONS[ext];
-  const l = name.toLowerCase();
-  for(const k in FALLBACK_ICONS) if(l.includes(k)) return FALLBACK_ICONS[k];
-  return "📁";
-}
-
-function highlight(text, q){
+function highlight(text,q){
   if(!q) return text;
-  const esc = q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-  const re = new RegExp(esc,'ig');
+  const re = new RegExp(q,'ig');
   return text.replace(re, m=>`<mark class="hi">${m}</mark>`);
 }
 
-function escapeHtml(s){ return String(s||"").replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-function escapeAttr(s){ return (s||"#").replace(/"/g,'&quot;'); }
+function render(list,q=""){
+  const results = document.getElementById("results");
+  const empty = document.getElementById("empty");
+  results.innerHTML = "";
 
-function render(list, q=""){
-  const cont = document.getElementById('results');
-  const empty = document.getElementById('empty');
-  cont.innerHTML = "";
   if(!list.length){
-    empty.style.display = "";
-    cont.style.display = "none";
-    document.getElementById('footer').textContent = `Menampilkan 0 file | @pacegondes 2025`;
+    empty.style.display="";
+    results.style.display="none";
+    document.getElementById('footer').textContent="Menampilkan 0 file | @pacegondes 2025";
     return;
   }
-  empty.style.display = "none";
-  cont.style.display = "";
-  list.forEach(it=>{
-    const icon = detectIcon(it._name, it._icon);
-    const card = document.createElement('div');
-    card.className = "card";
-    card.innerHTML = `
-      <div class="icon">${icon}</div>
-      <div class="name">${highlight(escapeHtml(it._name), q)}</div>
-      <div class="meta">${escapeHtml(it._size)} ${it._date ? '· ' + escapeHtml(it._date) : ''}</div>
-      <a class="open-btn" href="${escapeAttr(it._link)}" target="_blank" rel="noopener">Buka</a>
+
+  empty.style.display="none";
+  results.style.display="grid";
+  list.forEach(item=>{
+    const card = document.createElement("div");
+    card.className="card";
+    card.innerHTML=`
+      <div class="icon">${item.ikon}</div>
+      <div class="name">${highlight(item.nama,q)}</div>
+      <a class="open-btn" href="${item.link}" target="_blank">Buka</a>
     `;
-    card.addEventListener('click', ()=>{
-      card.style.transition = "transform .18s ease, box-shadow .18s ease";
-      card.style.transform = "scale(1.04)";
-      card.style.boxShadow = "0 0 22px rgba(34,197,94,0.28)";
-      setTimeout(()=>{
-        card.style.transform = "";
-        card.style.boxShadow = "";
-      }, 350);
+    card.addEventListener("click", e=>{
+      if(e.target.tagName==="A") return;
+      card.style.transform="scale(1.05)";
+      setTimeout(()=>card.style.transform="",200);
+      window.open(item.link,"_blank");
     });
-    cont.appendChild(card);
+    results.appendChild(card);
   });
+
   document.getElementById('footer').textContent = `Menampilkan ${list.length} file | @pacegondes 2025`;
 }
 
-async function loadCsv(){
+async function load(){
   try{
     const res = await fetch(CSV_URL);
-    if(!res.ok) throw new Error(res.status + " " + res.statusText);
+    if(!res.ok) throw new Error("HTTP "+res.status);
     const txt = await res.text();
     dataAll = csvToObjects(txt);
     render(dataAll);
-  }catch(err){
-    document.getElementById('results').innerHTML = `<div style="grid-column:1/-1;color:#b00020;text-align:center;padding:18px;background:#fff;border-radius:8px">Gagal ambil data: ${err.message}</div>`;
-    console.error(err);
+  }catch(e){
+    document.getElementById("results").innerHTML=`<div class="empty">Gagal ambil data: ${e.message}</div>`;
   }
 }
 
 function doSearch(){
-  const q = document.getElementById('q').value.trim().toLowerCase();
-  if(!q) return render(dataAll);
-  const filtered = dataAll.filter(d => (d._name||"").toLowerCase().includes(q) || (d._category||"").toLowerCase().includes(q));
-  render(filtered, q);
+  const q = document.getElementById("q").value.trim().toLowerCase();
+  if(!q){ render(dataAll); return; }
+  const filtered = dataAll.filter(x=>x.nama.toLowerCase().includes(q));
+  render(filtered,q);
 }
 
-document.getElementById('q').addEventListener('input', ()=> doSearch());
-loadCsv();
+document.getElementById("q").addEventListener("input", doSearch);
+load();
 </script>
 </body>
 </html>
