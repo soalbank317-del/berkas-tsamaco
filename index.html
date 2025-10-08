@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Arsip MTs Amtsilati - Persiapan Tsamaco</title>
+  <title>Tsamaco</title>
   <style>
     body {
       margin: 0;
@@ -12,6 +12,7 @@
       color: #333;
     }
 
+    /* HEADER AREA */
     header {
       background-color: #fff;
       box-shadow: 0 1px 6px rgba(0,0,0,0.1);
@@ -22,6 +23,21 @@
       position: sticky;
       top: 0;
       z-index: 1000;
+      gap: 18px;
+    }
+
+    .logo-text {
+      font-size: 22px;
+      font-weight: 700;
+      color: #22c55e;
+      margin-right: 20px;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .logo-text:hover {
+      color: #16a34a;
     }
 
     .search-container {
@@ -64,17 +80,11 @@
       background: #16a34a;
     }
 
+    /* GRID AREA */
     main {
       max-width: 1300px;
       margin: 30px auto;
       padding: 0 20px;
-    }
-
-    h1 {
-      text-align: center;
-      color: #1e293b;
-      margin-bottom: 20px;
-      font-size: 26px;
     }
 
     .results {
@@ -96,6 +106,7 @@
       .results { grid-template-columns: repeat(1, 1fr); }
     }
 
+    /* CARD DESIGN */
     .card {
       background: #fff;
       border-radius: 14px;
@@ -154,15 +165,14 @@
 <body>
 
   <header>
+    <div class="logo-text">Tsamaco</div>
     <form class="search-container" onsubmit="event.preventDefault(); searchFiles();">
-      <input type="text" id="searchInput" placeholder="Cari dokumen atau arsip di sini...">
+      <input type="text" id="searchInput" placeholder="Cari dokumen, arsip, atau pelajaran...">
       <button type="submit">Cari</button>
     </form>
   </header>
 
   <main>
-    <h1>Arsip MTs Amtsilati – Persiapan Tsamaco</h1>
-
     <div class="results" id="fileResults">
       <!-- File Cards -->
     </div>
