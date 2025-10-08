@@ -4,15 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tsamaco</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Mengimpor Open Sans dari Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      font-family: 'Poppins', sans-serif;
+      font-family: 'Open Sans', sans-serif;
       background-color: #f5f6fa;
       color: #333;
     }
 
-    /* HEADER AREA */
     header {
       background-color: #fff;
       box-shadow: 0 1px 6px rgba(0,0,0,0.1);
@@ -20,22 +23,21 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 18px;
       position: sticky;
       top: 0;
       z-index: 1000;
-      gap: 18px;
     }
 
     .logo-text {
       font-size: 22px;
-      font-weight: 700;
+      font-weight: 600;
       color: #22c55e;
       margin-right: 20px;
       letter-spacing: 0.5px;
       cursor: pointer;
       transition: color 0.2s ease;
     }
-
     .logo-text:hover {
       color: #16a34a;
     }
@@ -49,9 +51,8 @@
       overflow: hidden;
       width: 100%;
       max-width: 600px;
-      transition: all 0.2s ease;
+      transition: box-shadow 0.2s ease;
     }
-
     .search-container:hover {
       box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
     }
@@ -64,7 +65,6 @@
       font-size: 15px;
       background: transparent;
     }
-
     .search-container button {
       background: #22c55e;
       color: #fff;
@@ -73,14 +73,12 @@
       font-weight: 600;
       cursor: pointer;
       font-size: 15px;
-      transition: 0.2s;
+      transition: background 0.2s ease;
     }
-
     .search-container button:hover {
       background: #16a34a;
     }
 
-    /* GRID AREA */
     main {
       max-width: 1300px;
       margin: 30px auto;
@@ -92,7 +90,6 @@
       grid-template-columns: repeat(5, 1fr);
       gap: 20px;
     }
-
     @media (max-width: 1200px) {
       .results { grid-template-columns: repeat(4, 1fr); }
     }
@@ -106,7 +103,6 @@
       .results { grid-template-columns: repeat(1, 1fr); }
     }
 
-    /* CARD DESIGN */
     .card {
       background: #fff;
       border-radius: 14px;
@@ -115,13 +111,14 @@
       box-shadow: 0 3px 6px rgba(0,0,0,0.08);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-
     .card:hover {
       transform: translateY(-4px);
       box-shadow: 0 6px 12px rgba(0,0,0,0.12);
     }
-
     .card:active {
       transform: scale(0.95);
       box-shadow: 0 0 10px #22c55e;
@@ -131,20 +128,17 @@
       font-size: 32px;
       margin-bottom: 6px;
     }
-
     .card h3 {
       font-size: 16px;
       margin: 6px 0;
       color: #1e293b;
       font-weight: 600;
     }
-
     .card p {
       font-size: 14px;
       color: #64748b;
       margin: 4px 0 10px;
     }
-
     .open-btn {
       display: inline-block;
       background: #22c55e;
@@ -156,7 +150,6 @@
       font-weight: 600;
       transition: background 0.2s ease;
     }
-
     .open-btn:hover {
       background: #16a34a;
     }
@@ -173,9 +166,7 @@
   </header>
 
   <main>
-    <div class="results" id="fileResults">
-      <!-- File Cards -->
-    </div>
+    <div class="results" id="fileResults"></div>
   </main>
 
   <script>
@@ -230,6 +221,7 @@
 
     displayFiles(files);
   </script>
+
 </body>
 </html>
 
