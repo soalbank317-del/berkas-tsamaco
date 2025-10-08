@@ -18,7 +18,7 @@ body{
   display:flex; justify-content:center; padding:24px;
 }
 .wrap{
-  width:100%; max-width:1100px;
+  width:100%; max-width:1200px;
   display:flex; flex-direction:column; align-items:center;
 }
 .head{
@@ -31,9 +31,9 @@ body{
   box-shadow:0 6px 18px rgba(0,200,83,0.3);
 }
 h1{ font-size:24px; text-transform:uppercase; color:var(--text); margin-bottom:4px;}
-.sub{ color:var(--muted); font-size:14px;}
+.sub{ color:var(--muted); font-size:14px; margin-bottom:20px;}
 .search-bar{
-  width:100%; max-width:600px; margin:20px 0;
+  width:100%; max-width:600px; margin-bottom:20px;
   display:flex; align-items:center;
   background:white; border-radius:12px; padding:4px 8px;
   box-shadow:0 4px 12px rgba(0,0,0,0.08);
@@ -42,41 +42,33 @@ h1{ font-size:24px; text-transform:uppercase; color:var(--text); margin-bottom:4
   flex:1; border:none; outline:none; font-size:14px; padding:10px 12px; border-radius:12px;
 }
 .search-bar input:focus{ box-shadow:0 0 0 2px var(--accent); }
-.search-bar svg{ width:20px; height:20px; fill:var(--muted); margin-right:6px;}
+
 .results{
-  width:100%; display:grid; grid-template-columns:1fr; gap:20px;
+  width:100%; margin-top:10px;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:14px;
 }
-@media(min-width:700px){ .results{ grid-template-columns:repeat(2,1fr);} }
-@media(min-width:1000px){ .results{ grid-template-columns:repeat(3,1fr);} }
+@media(max-width:1200px){ .results{ grid-template-columns:repeat(4,1fr);} }
+@media(max-width:1000px){ .results{ grid-template-columns:repeat(3,1fr);} }
+@media(max-width:700px){ .results{ grid-template-columns:repeat(2,1fr);} }
+@media(max-width:500px){ .results{ grid-template-columns:1fr;} }
 
 .card{
-  background:var(--card); border-radius:16px;
-  display:flex; flex-direction:column; align-items:center;
-  padding:20px; box-shadow:0 4px 14px rgba(0,0,0,0.06);
-  transition:transform 0.3s ease, box-shadow 0.3s ease;
-  text-align:center;
+  display:flex; flex-direction:column; align-items:center; text-align:center;
+  background:var(--card); border-radius:12px;
+  padding:16px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.05);
+  transition:transform 0.2s ease, box-shadow 0.2s ease;
 }
-.card:hover{ transform:translateY(-6px) scale(1.02); box-shadow:0 12px 28px rgba(0,0,0,0.12);}
+.card:hover{ transform:translateY(-3px); box-shadow:0 8px 20px rgba(0,0,0,0.12);}
 .symbol{
-  width:60px; height:60px; border-radius:16px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:28px; background:#f0f0f0; color:var(--accent);
-  margin-bottom:12px;
+  font-size:36px; margin-bottom:12px;
 }
-.mapel{
-  font-weight:600; font-size:16px; color:var(--text); margin-bottom:8px;
-  word-break:break-word;
-}
-.badges{
-  display:flex; justify-content:center; gap:6px; flex-wrap:wrap; margin-bottom:12px;
-}
-.badge{
-  background:var(--accent); color:white; font-size:12px; font-weight:500;
-  padding:3px 8px; border-radius:10px;
-}
-.actions{ display:flex; justify-content:center; width:100%;}
+.mapel{ font-weight:500; color:var(--text); margin-bottom:6px; word-break:break-word; font-size:14px;}
+.badge{ font-size:12px; color:var(--muted); margin-bottom:4px;}
 .btn.open{
-  padding:8px 20px; border-radius:16px; border:0;
+  padding:6px 14px; border-radius:12px; border:0;
   background:var(--accent); color:white; font-weight:600; text-decoration:none;
   transition:0.2s;
 }
@@ -95,7 +87,6 @@ footer{ margin-top:28px; text-align:center; color:var(--muted); font-size:13px;}
   </div>
 
   <div class="search-bar">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.71 20.29l-3.388-3.388A8.953 8.953 0 0 0 19 10a9 9 0 1 0-9 9 8.953 8.953 0 0 0 6.902-2.678l3.388 3.388a1 1 0 0 0 1.414-1.414zM4 10a6 6 0 1 1 6 6 6 6 0 0 1-6-6z"/></svg>
     <input id="q" placeholder="Cari nama file...">
   </div>
 
@@ -132,12 +123,13 @@ function parseCSV(text){
   });
 }
 
-const FILE_ICONS = { pdf:"📄", doc:"📄", docx:"📄", xls:"📊", xlsx:"📊", zip:"🗜️", ppt:"📈" };
+const FILE_ICONS = { pdf:"📄", doc:"📄", docx:"📄", xls:"📊", xlsx:"📊", zip:"🗜️", ppt:"📈",
+  "Al-Qur'an Hadits":"📖","Akidah Ahlak":"👳‍♂️","Bahasa Arab":"📝"
+};
 
 function detectIcon(name,csvIcon){
   if(csvIcon && csvIcon.trim()) return csvIcon.trim();
-  const ext = name.split('.').pop().toLowerCase();
-  return FILE_ICONS[ext] || "⭐";
+  return FILE_ICONS[name] || "⭐";
 }
 
 function highlight(text,q){
@@ -160,19 +152,14 @@ function render(){
 
   filtered.forEach(it=>{
     const icon = detectIcon(it.nama,it.ikon);
-    const card = document.createElement('article');
+    const card = document.createElement('div');
     card.className='card';
     card.innerHTML = `
       <div class="symbol">${icon}</div>
       <div class="mapel">${highlight(it.nama,q)}</div>
-      <div class="badges">
-        <span class="badge">${it.size}</span>
-        <span class="badge">${it.date}</span>
-        <span class="badge">${it.category}</span>
-      </div>
-      <div class="actions">
-        <a class="btn open" href="${escapeAttr(it.link)}" target="_blank" rel="noopener">Buka</a>
-      </div>
+      <div class="badge">${it.size}</div>
+      <div class="badge">${it.date}</div>
+      <a class="btn open" href="${escapeAttr(it.link)}" target="_blank" rel="noopener">Buka</a>
     `;
     cont.appendChild(card);
   });
@@ -199,5 +186,4 @@ load();
 </script>
 </body>
 </html>
-
 
