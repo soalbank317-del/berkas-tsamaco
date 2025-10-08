@@ -32,15 +32,16 @@ body{
 }
 h1{ font-size:22px; letter-spacing:1px; color:var(--text); text-transform:uppercase; margin-bottom:6px;}
 .sub{ color:var(--muted); font-size:14px; margin-bottom:12px;}
-.search{ width:100%; max-width:780px; margin:12px 0;}
-.search input{
-  width:100%; padding:14px 18px; border-radius:999px; border:2px solid var(--accent);
-  outline:none; font-size:15px; box-shadow:0 4px 12px rgba(0,0,0,0.05);
+.controls{ display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-bottom:12px;}
+.controls select, .controls input{
+  padding:10px 14px; border-radius:8px; border:2px solid var(--accent);
+  outline:none; font-size:14px;
   transition:0.25s;
 }
-.search input:focus{ border-color:var(--accent-dark); box-shadow:0 6px 18px rgba(0,0,0,0.15);}
+.controls select:focus, .controls input:focus{ border-color:var(--accent-dark); }
+
 .results{
-  width:100%; margin-top:20px; display:grid; grid-template-columns:1fr; gap:14px;
+  width:100%; margin-top:10px; display:grid; grid-template-columns:1fr; gap:14px;
 }
 @media(min-width:700px){ .results{ grid-template-columns:repeat(2,1fr);} }
 @media(min-width:1000px){ .results{ grid-template-columns:repeat(3,1fr);} }
@@ -83,8 +84,21 @@ footer{ margin-top:20px; text-align:center; color:var(--muted); font-size:13px;}
     <div class="sub">Arsip Soal MTs Amtsilati - Persiapan Tsamaco</div>
   </div>
 
-  <div class="search">
-    <input id="q" placeholder="Cari nama file, jenis, atau tanggal update...">
+  <div class="controls">
+    <input id="q" placeholder="Cari nama file...">
+    <select id="fileType">
+      <option value="">Semua Jenis File</option>
+      <option value="pdf">PDF</option>
+      <option value="doc">Word</option>
+      <option value="xls">Excel</option>
+      <option value="zip">ZIP</option>
+    </select>
+    <select id="category">
+      <option value="">Semua Kategori</option>
+      <option value="Administrasi">Administrasi</option>
+      <option value="Materi">Materi</option>
+      <option value="Template">Template</option>
+    </select>
   </div>
 
   <div id="results" class="results" aria-live="polite"></div>
@@ -99,28 +113,30 @@ function parseCSV(text){
   const rows = text.split(/\r?\n/).filter(r=>r.trim()!=="");
   if(!rows.length) return [];
   const header = rows.shift().split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(h=>h.trim().toLowerCase());
-  const iNama = header.indexOf("nama file");
-  const iLink = header.indexOf("link file");
-  const iIcon = header.indexOf("ikon");
-  const iSize = header.indexOf("ukuran");
-  const iDate = header.indexOf("tanggal");
+  const idx = {
+    nama: header.indexOf("nama file"),
+    link: header.indexOf("link file"),
+    ikon: header.indexOf("ikon"),
+    size: header.indexOf("ukuran"),
+    date: header.indexOf("tanggal"),
+    cat: header.indexOf("kategori")
+  };
   return rows.map(line=>{
     const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c=>c.replace(/^"|"$/g,'').trim());
     return {
-      nama: cols[iNama] || "Untitled",
-      link: cols[iLink] || "#",
-      ikon: cols[iIcon] || "",
-      size: cols[iSize] || "-",
-      date: cols[iDate] || "-"
+      nama: cols[idx.nama] || "Untitled",
+      link: cols[idx.link] || "#",
+      ikon: cols[idx.ikon] || "",
+      size: cols[idx.size] || "-",
+      date: cols[idx.date] || "-",
+      category: cols[idx.cat] || "-"
     };
   });
 }
 
-const FILE_ICONS = {
-  "pdf":"📄", "doc":"📄", "docx":"📄", "xls":"📊", "xlsx":"📊", "zip":"🗜️", "ppt":"📈"
-};
+const FILE_ICONS = { pdf:"📄", doc:"📄", docx:"📄", xls:"📊", xlsx:"📊", zip:"🗜️", ppt:"📈" };
 
-function detectIcon(name, csvIcon){
+function detectIcon(name,csvIcon){
   if(csvIcon && csvIcon.trim()) return csvIcon.trim();
   const ext = name.split('.').pop().toLowerCase();
   return FILE_ICONS[ext] || "⭐";
@@ -130,16 +146,28 @@ function highlight(text,q){
   if(!q) return text;
   const esc = q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
   const re = new RegExp(esc,'ig');
-  return text.replace(re, m => `<mark class="hi">${m}</mark>`);
+  return text.replace(re, m=>`<mark class="hi">${m}</mark>`);
 }
 
 function escapeAttr(s){ return s?s.replace(/"/g,'&quot;'):''; }
 
-function render(items,q=""){
+function render(){
+  const q = document.getElementById('q').value.trim().toLowerCase();
+  const type = document.getElementById('fileType').value.toLowerCase();
+  const cat = document.getElementById('category').value.toLowerCase();
   const cont = document.getElementById('results');
-  cont.innerHTML="";
-  if(!items.length){ cont.innerHTML='<div class="empty">Tidak ada file yang cocok.</div>'; return; }
-  items.forEach(it=>{
+  cont.innerHTML = "";
+
+  const filtered = all.filter(f=>{
+    const matchQ = f.nama.toLowerCase().includes(q);
+    const matchType = type ? f.nama.toLowerCase().endsWith(type) : true;
+    const matchCat = cat ? f.category.toLowerCase() === cat : true;
+    return matchQ && matchType && matchCat;
+  });
+
+  if(!filtered.length){ cont.innerHTML='<div class="empty">Tidak ada file yang cocok.</div>'; return; }
+
+  filtered.forEach(it=>{
     const icon = detectIcon(it.nama,it.ikon);
     const card = document.createElement('article');
     card.className='card';
@@ -150,6 +178,7 @@ function render(items,q=""){
           <div class="mapel">${highlight(it.nama,q)}</div>
           <span>${it.size}</span>
           <span>${it.date}</span>
+          <span>${it.category}</span>
         </div>
       </div>
       <div class="actions">
@@ -158,7 +187,8 @@ function render(items,q=""){
     `;
     cont.appendChild(card);
   });
-  document.getElementById('footer').textContent = `Menampilkan ${items.length} file | @pacegondes 2025`;
+
+  document.getElementById('footer').textContent = `Menampilkan ${filtered.length} file | @pacegondes 2025`;
 }
 
 async function load(){
@@ -168,17 +198,16 @@ async function load(){
     const text = await res.text();
     all = parseCSV(text);
     all.sort((a,b)=>a.nama.localeCompare(b.nama));
+    render();
   }catch(err){
     document.getElementById('results').innerHTML=`<div class="empty">Gagal mengambil data: ${err.message}</div>`;
     console.error(err);
   }
 }
 
-document.getElementById('q').addEventListener('input',()=>{
-  const q = document.getElementById('q').value.trim();
-  if(q===""){ document.getElementById('results').innerHTML=""; return; }
-  render(all.filter(i=>i.nama.toLowerCase().includes(q.toLowerCase())),q);
-});
+document.getElementById('q').addEventListener('input', render);
+document.getElementById('fileType').addEventListener('change', render);
+document.getElementById('category').addEventListener('change', render);
 
 load();
 </script>
