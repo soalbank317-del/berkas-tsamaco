@@ -22,7 +22,7 @@ body{
   display:flex; flex-direction:column; align-items:center;
 }
 .head{
-  text-align:center; margin-bottom:20px;
+  text-align:center; margin-bottom:24px;
 }
 .logo{
   width:80px; height:80px; border-radius:16px;
@@ -30,16 +30,16 @@ body{
   color:white; font-size:36px; font-weight:700; margin:0 auto 12px;
   box-shadow:0 6px 18px rgba(0,200,83,0.3);
 }
-h1{ font-size:24px; text-transform:uppercase; color:var(--text); margin-bottom:4px;}
-.sub{ color:var(--muted); font-size:14px; margin-bottom:20px;}
+h1{ font-size:28px; text-transform:uppercase; color:var(--text); margin-bottom:4px; letter-spacing:1px;}
+.sub{ color:var(--muted); font-size:16px; margin-bottom:20px;}
 .search-bar{
-  width:100%; max-width:600px; margin-bottom:20px;
+  width:100%; max-width:600px; margin-bottom:24px;
   display:flex; align-items:center;
-  background:white; border-radius:12px; padding:4px 8px;
+  background:white; border-radius:16px; padding:6px 10px;
   box-shadow:0 4px 12px rgba(0,0,0,0.08);
 }
 .search-bar input{
-  flex:1; border:none; outline:none; font-size:14px; padding:10px 12px; border-radius:12px;
+  flex:1; border:none; outline:none; font-size:15px; padding:12px 14px; border-radius:16px;
 }
 .search-bar input:focus{ box-shadow:0 0 0 2px var(--accent); }
 
@@ -47,7 +47,7 @@ h1{ font-size:24px; text-transform:uppercase; color:var(--text); margin-bottom:4
   width:100%; margin-top:10px;
   display:grid;
   grid-template-columns:repeat(5,1fr);
-  gap:14px;
+  gap:16px;
 }
 @media(max-width:1200px){ .results{ grid-template-columns:repeat(4,1fr);} }
 @media(max-width:1000px){ .results{ grid-template-columns:repeat(3,1fr);} }
@@ -56,24 +56,26 @@ h1{ font-size:24px; text-transform:uppercase; color:var(--text); margin-bottom:4
 
 .card{
   display:flex; flex-direction:column; align-items:center; text-align:center;
-  background:var(--card); border-radius:12px;
-  padding:16px;
-  box-shadow:0 4px 10px rgba(0,0,0,0.05);
-  transition:transform 0.2s ease, box-shadow 0.2s ease;
+  background:var(--card); border-radius:16px;
+  padding:20px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor:pointer;
 }
-.card:hover{ transform:translateY(-3px); box-shadow:0 8px 20px rgba(0,0,0,0.12);}
+.card:hover{ transform:translateY(-5px) scale(1.03); box-shadow:0 12px 28px rgba(0,0,0,0.14);}
+.card:active{ transform:scale(0.97); box-shadow:0 6px 16px rgba(0,0,0,0.1);}
 .symbol{
-  font-size:36px; margin-bottom:12px;
+  font-size:40px; margin-bottom:12px; transition: transform 0.25s ease;
 }
-.mapel{ font-weight:500; color:var(--text); margin-bottom:6px; word-break:break-word; font-size:14px;}
-.badge{ font-size:12px; color:var(--muted); margin-bottom:4px;}
+.mapel{ font-weight:600; color:var(--text); margin-bottom:6px; word-break:break-word; font-size:14px;}
+.badge{ font-size:12px; color:var(--muted); margin-bottom:6px;}
 .btn.open{
-  padding:6px 14px; border-radius:12px; border:0;
+  padding:6px 16px; border-radius:12px; border:0;
   background:var(--accent); color:white; font-weight:600; text-decoration:none;
   transition:0.2s;
 }
 .btn.open:hover{ background:var(--accent-dark); }
-.empty{text-align:center;color:var(--muted); padding:36px 0; font-size:16px;}
+.empty{text-align:center;color:var(--muted); padding:48px 0; font-size:16px;}
 mark.hi{ background:var(--highlight); padding:0 .15em; border-radius:4px;}
 footer{ margin-top:28px; text-align:center; color:var(--muted); font-size:13px;}
 </style>
@@ -161,6 +163,10 @@ function render(){
       <div class="badge">${it.date}</div>
       <a class="btn open" href="${escapeAttr(it.link)}" target="_blank" rel="noopener">Buka</a>
     `;
+    // Animasi klik tambahan
+    card.addEventListener('mousedown',()=>{ card.style.transform='scale(0.97)'; });
+    card.addEventListener('mouseup',()=>{ card.style.transform='scale(1)'; });
+    card.addEventListener('mouseleave',()=>{ card.style.transform='scale(1)'; });
     cont.appendChild(card);
   });
 
@@ -186,4 +192,5 @@ load();
 </script>
 </body>
 </html>
+
 
