@@ -1,195 +1,225 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TSAMACO - Arsip File</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg:#f5f5f5; --card:#ffffff; --accent:#00c853; --accent-dark:#009624;
-  --muted:#666; --text:#222; --highlight:#ffe57f;
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{
-  font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
-  background:var(--bg);
-  min-height:100vh;
-  display:flex; justify-content:center; padding:24px;
-}
-.wrap{
-  width:100%; max-width:1200px;
-  display:flex; flex-direction:column; align-items:center;
-}
-.head{
-  text-align:center; margin-bottom:24px;
-}
-.logo{
-  width:80px; height:80px; border-radius:16px;
-  background:var(--accent); display:flex; align-items:center; justify-content:center;
-  color:white; font-size:36px; font-weight:700; margin:0 auto 12px;
-  box-shadow:0 6px 18px rgba(0,200,83,0.3);
-}
-h1{ font-size:28px; text-transform:uppercase; color:var(--text); margin-bottom:4px; letter-spacing:1px;}
-.sub{ color:var(--muted); font-size:16px; margin-bottom:20px;}
-.search-bar{
-  width:100%; max-width:600px; margin-bottom:24px;
-  display:flex; align-items:center;
-  background:white; border-radius:16px; padding:6px 10px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.08);
-}
-.search-bar input{
-  flex:1; border:none; outline:none; font-size:15px; padding:12px 14px; border-radius:16px;
-}
-.search-bar input:focus{ box-shadow:0 0 0 2px var(--accent); }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arsip MTs Amtsilati - Persiapan Tsamaco</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f6fa;
+      color: #333;
+    }
 
-.results{
-  width:100%; margin-top:10px;
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:16px;
-}
-@media(max-width:1200px){ .results{ grid-template-columns:repeat(4,1fr);} }
-@media(max-width:1000px){ .results{ grid-template-columns:repeat(3,1fr);} }
-@media(max-width:700px){ .results{ grid-template-columns:repeat(2,1fr);} }
-@media(max-width:500px){ .results{ grid-template-columns:1fr;} }
+    header {
+      background-color: #fff;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+      padding: 14px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
 
-.card{
-  display:flex; flex-direction:column; align-items:center; text-align:center;
-  background:var(--card); border-radius:16px;
-  padding:20px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.06);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  cursor:pointer;
-}
-.card:hover{ transform:translateY(-5px) scale(1.03); box-shadow:0 12px 28px rgba(0,0,0,0.14);}
-.card:active{ transform:scale(0.97); box-shadow:0 6px 16px rgba(0,0,0,0.1);}
-.symbol{
-  font-size:40px; margin-bottom:12px; transition: transform 0.25s ease;
-}
-.mapel{ font-weight:600; color:var(--text); margin-bottom:6px; word-break:break-word; font-size:14px;}
-.badge{ font-size:12px; color:var(--muted); margin-bottom:6px;}
-.btn.open{
-  padding:6px 16px; border-radius:12px; border:0;
-  background:var(--accent); color:white; font-weight:600; text-decoration:none;
-  transition:0.2s;
-}
-.btn.open:hover{ background:var(--accent-dark); }
-.empty{text-align:center;color:var(--muted); padding:48px 0; font-size:16px;}
-mark.hi{ background:var(--highlight); padding:0 .15em; border-radius:4px;}
-footer{ margin-top:28px; text-align:center; color:var(--muted); font-size:13px;}
-</style>
+    .search-container {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      border: 2px solid #22c55e;
+      border-radius: 50px;
+      overflow: hidden;
+      width: 100%;
+      max-width: 600px;
+      transition: all 0.2s ease;
+    }
+
+    .search-container:hover {
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
+    }
+
+    .search-container input {
+      flex: 1;
+      padding: 10px 18px;
+      border: none;
+      outline: none;
+      font-size: 15px;
+      background: transparent;
+    }
+
+    .search-container button {
+      background: #22c55e;
+      color: #fff;
+      border: none;
+      padding: 10px 22px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 15px;
+      transition: 0.2s;
+    }
+
+    .search-container button:hover {
+      background: #16a34a;
+    }
+
+    main {
+      max-width: 1300px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #1e293b;
+      margin-bottom: 20px;
+      font-size: 26px;
+    }
+
+    .results {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 1200px) {
+      .results { grid-template-columns: repeat(4, 1fr); }
+    }
+    @media (max-width: 1000px) {
+      .results { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 700px) {
+      .results { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 500px) {
+      .results { grid-template-columns: repeat(1, 1fr); }
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 18px;
+      text-align: center;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+    }
+
+    .card:active {
+      transform: scale(0.95);
+      box-shadow: 0 0 10px #22c55e;
+    }
+
+    .card .emoji {
+      font-size: 32px;
+      margin-bottom: 6px;
+    }
+
+    .card h3 {
+      font-size: 16px;
+      margin: 6px 0;
+      color: #1e293b;
+      font-weight: 600;
+    }
+
+    .card p {
+      font-size: 14px;
+      color: #64748b;
+      margin: 4px 0 10px;
+    }
+
+    .open-btn {
+      display: inline-block;
+      background: #22c55e;
+      color: white;
+      padding: 6px 16px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background 0.2s ease;
+    }
+
+    .open-btn:hover {
+      background: #16a34a;
+    }
+  </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="head">
-    <div class="logo">TA</div>
-    <h1>TSAMACO</h1>
-    <div class="sub">Arsip MTs Amtsilati - Persiapan Tsamaco</div>
-  </div>
 
-  <div class="search-bar">
-    <input id="q" placeholder="Cari nama file...">
-  </div>
+  <header>
+    <form class="search-container" onsubmit="event.preventDefault(); searchFiles();">
+      <input type="text" id="searchInput" placeholder="Cari dokumen atau arsip di sini...">
+      <button type="submit">Cari</button>
+    </form>
+  </header>
 
-  <div id="results" class="results" aria-live="polite"></div>
-  <footer id="footer">@pacegondes <strong>2025</strong></footer>
-</div>
+  <main>
+    <h1>Arsip MTs Amtsilati – Persiapan Tsamaco</h1>
 
-<script>
-const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT1s3KCGJWMcqWQkTppTXiuZMxxFUPJVLIxttNtOFRg2tzDT7kDeWxOyVofc8Fa7-PAQj8IiLD_S1Sw/pub?output=csv";
-let all = [];
+    <div class="results" id="fileResults">
+      <!-- File Cards -->
+    </div>
+  </main>
 
-function parseCSV(text){
-  const rows = text.split(/\r?\n/).filter(r=>r.trim()!=="");
-  if(!rows.length) return [];
-  const header = rows.shift().split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(h=>h.trim().toLowerCase());
-  const idx = {
-    nama: header.indexOf("nama file"),
-    link: header.indexOf("link file"),
-    ikon: header.indexOf("ikon"),
-    size: header.indexOf("ukuran"),
-    date: header.indexOf("tanggal"),
-    cat: header.indexOf("kategori")
-  };
-  return rows.map(line=>{
-    const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c=>c.replace(/^"|"$/g,'').trim());
-    return {
-      nama: cols[idx.nama] || "Untitled",
-      link: cols[idx.link] || "#",
-      ikon: cols[idx.ikon] || "",
-      size: cols[idx.size] || "-",
-      date: cols[idx.date] || "-",
-      category: cols[idx.cat] || "-"
-    };
-  });
-}
+  <script>
+    const files = [
+      { name: "Akidah Akhlak", icon: "📖", link: "#" },
+      { name: "Al-Qur'an Hadits", icon: "👳‍♂️", link: "#" },
+      { name: "Bahasa Arab", icon: "🕌", link: "#" },
+      { name: "SKI", icon: "📜", link: "#" },
+      { name: "Fikih", icon: "📘", link: "#" },
+      { name: "Bahasa Indonesia", icon: "📚", link: "#" },
+      { name: "Matematika", icon: "🧮", link: "#" },
+      { name: "IPA", icon: "🔬", link: "#" },
+      { name: "IPS", icon: "🌏", link: "#" },
+      { name: "Bahasa Inggris", icon: "🇬🇧", link: "#" },
+      { name: "PJOK", icon: "🏃‍♂️", link: "#" },
+      { name: "Informatika", icon: "💻", link: "#" },
+      { name: "Seni Budaya", icon: "🎨", link: "#" },
+      { name: "Prakarya", icon: "🛠️", link: "#" },
+      { name: "Bahasa Jawa", icon: "🧩", link: "#" },
+      { name: "Nahwu Shorof", icon: "📗", link: "#" },
+      { name: "Fiqih Lanjutan", icon: "📕", link: "#" },
+    ];
 
-const FILE_ICONS = { pdf:"📄", doc:"📄", docx:"📄", xls:"📊", xlsx:"📊", zip:"🗜️", ppt:"📈",
-  "Al-Qur'an Hadits":"📖","Akidah Ahlak":"👳‍♂️","Bahasa Arab":"📝"
-};
+    const container = document.getElementById('fileResults');
 
-function detectIcon(name,csvIcon){
-  if(csvIcon && csvIcon.trim()) return csvIcon.trim();
-  return FILE_ICONS[name] || "⭐";
-}
+    function displayFiles(list) {
+      container.innerHTML = list.map(f => `
+        <div class="card" onclick="animateCard(this)">
+          <div class="emoji">${f.icon}</div>
+          <h3>${f.name}</h3>
+          <p>- - -</p>
+          <a href="${f.link}" class="open-btn">Buka</a>
+        </div>
+      `).join('');
+    }
 
-function highlight(text,q){
-  if(!q) return text;
-  const esc = q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-  const re = new RegExp(esc,'ig');
-  return text.replace(re, m=>`<mark class="hi">${m}</mark>`);
-}
+    function searchFiles() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = files.filter(f => f.name.toLowerCase().includes(query));
+      displayFiles(filtered);
+    }
 
-function escapeAttr(s){ return s?s.replace(/"/g,'&quot;'):''; }
+    function animateCard(card) {
+      card.style.transition = "all 0.3s ease";
+      card.style.transform = "scale(1.05)";
+      card.style.boxShadow = "0 0 20px rgba(34,197,94,0.5)";
+      setTimeout(() => {
+        card.style.transform = "";
+        card.style.boxShadow = "";
+      }, 400);
+    }
 
-function render(){
-  const q = document.getElementById('q').value.trim().toLowerCase();
-  const cont = document.getElementById('results');
-  cont.innerHTML = "";
-
-  const filtered = all.filter(f=>f.nama.toLowerCase().includes(q));
-
-  if(!filtered.length){ cont.innerHTML='<div class="empty">Tidak ada file yang cocok.</div>'; return; }
-
-  filtered.forEach(it=>{
-    const icon = detectIcon(it.nama,it.ikon);
-    const card = document.createElement('div');
-    card.className='card';
-    card.innerHTML = `
-      <div class="symbol">${icon}</div>
-      <div class="mapel">${highlight(it.nama,q)}</div>
-      <div class="badge">${it.size}</div>
-      <div class="badge">${it.date}</div>
-      <a class="btn open" href="${escapeAttr(it.link)}" target="_blank" rel="noopener">Buka</a>
-    `;
-    // Animasi klik tambahan
-    card.addEventListener('mousedown',()=>{ card.style.transform='scale(0.97)'; });
-    card.addEventListener('mouseup',()=>{ card.style.transform='scale(1)'; });
-    card.addEventListener('mouseleave',()=>{ card.style.transform='scale(1)'; });
-    cont.appendChild(card);
-  });
-
-  document.getElementById('footer').textContent = `Menampilkan ${filtered.length} file | @pacegondes 2025`;
-}
-
-async function load(){
-  try{
-    const res = await fetch(CSV_URL);
-    if(!res.ok) throw new Error('Fetch error: '+res.status);
-    const text = await res.text();
-    all = parseCSV(text);
-    all.sort((a,b)=>a.nama.localeCompare(b.nama));
-    render();
-  }catch(err){
-    document.getElementById('results').innerHTML=`<div class="empty">Gagal mengambil data: ${err.message}</div>`;
-    console.error(err);
-  }
-}
-
-document.getElementById('q').addEventListener('input', render);
-load();
-</script>
+    displayFiles(files);
+  </script>
 </body>
 </html>
 
